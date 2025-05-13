@@ -3,7 +3,7 @@ import tkinter as tk
 # Taille du plateau de jeu et des cases
 BOARD_SIZE = 8
 SQUARE_SIZE = 60
-#test Couleurs des cases du plateau
+# Couleurs des cases du plateau
 LIGHT_COLOR = "#EEEED2"
 DARK_COLOR = "#769656"
 
@@ -48,12 +48,27 @@ class ChessUI:
         self.canvas = tk.Canvas(frame, width=canvas_width, height=canvas_height)
         self.canvas.grid(row=0, column=0)
 
+        self.fen_label = tk.Label(frame, text="FEN :", font=("Arial", 12, "bold"))
+        self.fen_label.grid(row=0, column=1, sticky="nw", padx=10)
+
+        self.fen_text = tk.Text(frame, height=3, width=50, font=("Courier", 10))
+        self.fen_text.grid(row=0, column=1, sticky="n", padx=10, pady=30)
+
         # Copie de la position initiale du plateau
         self.board = [row[:] for row in START_POSITION]
         # Dessin du plateau, des pièces et des coordonnées
         self.draw_board()
         self.draw_pieces()
         self.draw_coordinates()
+        self.update_fen_display()
+
+        # Ajout d'un bouton pour tourner l'échiquier
+        rotate_button = tk.Button(frame, text="Tourner l'échiquier", command=self.rotate_board)
+        rotate_button.grid(row=1, column=0, pady=10)
+
+        # Initialisation des variables pour le déplacement des pièces
+        self.selected_piece = None
+        self.canvas.bind("<Button-1>", self.on_click)
 
     def draw_board(self):
         # Dessin des cases du plateau
@@ -92,6 +107,63 @@ class ChessUI:
             x = SQUARE_SIZE // 2
             y = row * SQUARE_SIZE + SQUARE_SIZE // 2
             self.canvas.create_text(x, y, text=number, font=("Arial", 12, "bold"))
+
+    def update_fen_display(self):
+        fen = self.board_to_fen()
+        self.fen_text.delete("1.0", tk.END)
+        self.fen_text.insert(tk.END, fen)
+
+    def board_to_fen(self):
+        fen_rows = []
+        for row in self.board:
+            fen_row = ""
+            empty = 0
+            for piece in row:
+                if piece == "":
+                    empty += 1
+                else:
+                    if empty:
+                        fen_row += str(empty)
+                        empty = 0
+                    fen_row += FEN_SYMBOLS.get(piece, "")
+            if empty:
+                fen_row += str(empty)
+            fen_rows.append(fen_row)
+        return "/".join(fen_rows) + " w KQkq - 0 1"
+
+    def rotate_board(self):
+        # Inverser les lignes et les colonnes du plateau
+        self.board = [row[::-1] for row in self.board[::-1]]
+        # Redessiner le plateau et les pièces
+        self.canvas.delete("all")
+        self.draw_board()
+        self.draw_pieces()
+        self.draw_coordinates()
+
+    def on_click(self, event):
+        # Gestion des clics pour déplacer une pièce
+        col = (event.x // SQUARE_SIZE) - 1
+        row = event.y // SQUARE_SIZE
+
+        # Vérifier si le clic est dans les limites du plateau
+        if 0 <= row < BOARD_SIZE and 0 <= col < BOARD_SIZE:
+            if self.selected_piece is None:
+                # Premier clic : sélectionner une pièce
+                if self.board[row][col]:  # Vérifie qu'il y a une pièce sur la case
+                    self.selected_piece = (row, col)
+            else:
+                # Deuxième clic : déplacer la pièce
+                target_row, target_col = row, col
+                piece = self.board[self.selected_piece[0]][self.selected_piece[1]]
+                self.board[self.selected_piece[0]][self.selected_piece[1]] = ""
+                self.board[target_row][target_col] = piece
+                self.selected_piece = None
+
+                # Redessiner le plateau et les pièces
+                self.canvas.delete("all")
+                self.draw_board()
+                self.draw_pieces()
+                self.draw_coordinates()
 
 if __name__ == "__main__":
     # Création de la fenêtre principale et lancement de l'application
