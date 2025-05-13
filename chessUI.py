@@ -3,7 +3,7 @@ import tkinter as tk
 # Taille du plateau de jeu et des cases
 BOARD_SIZE = 8
 SQUARE_SIZE = 60
-# Couleurs des cases du plateau
+#test Couleurs des cases du plateau
 LIGHT_COLOR = "#EEEED2"
 DARK_COLOR = "#769656"
 
