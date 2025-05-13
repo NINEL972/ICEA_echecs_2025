@@ -46,6 +46,10 @@ class ChessUI:
         self.fen_text = tk.Text(frame, height=3, width=50, font=("Courier", 10))
         self.fen_text.grid(row=0, column=1, sticky="n", padx=10, pady=30)
 
+
+        self.flip_button = tk.Button(frame, text="Tourner le plateau", command=self.flip_board)
+        self.flip_button.grid(row=1, column=1, sticky="n", padx=10, pady=10)
+
         self.board = [row[:] for row in START_POSITION]
         self.draw_board()
         self.draw_pieces()
@@ -109,8 +113,20 @@ class ChessUI:
                 fen_row += str(empty)
             fen_rows.append(fen_row)
         return "/".join(fen_rows) + " w KQkq - 0 1"
+    
+    def flip_board(self):
+            # Inverser le contenu du plateau
+            self.board = [row[::-1] for row in self.board[::-1]]
+            
+            # Effacer tout et redessiner
+            self.canvas.delete("all")
+            self.draw_board()
+            self.draw_pieces()
+            self.draw_coordinates()
+            self.update_fen_display()
 
-if __name__ == "__main__":
+
+if __name__ == "__main__" : 
     root = tk.Tk()
     app = ChessUI(root)
     root.mainloop()
