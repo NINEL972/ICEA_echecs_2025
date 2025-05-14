@@ -1,5 +1,5 @@
 import tkinter as tk
-from classes.ChessUI import ChessUI
+from classes.MenuUI import *
 
 BOARD_SIZE = 8
 SQUARE_SIZE = 60
@@ -28,6 +28,9 @@ START_POSITION = [
 ]
 
 if __name__ == "__main__" : 
+    canvas_width = SQUARE_SIZE * (BOARD_SIZE + 1)
+    canvas_height = SQUARE_SIZE * (BOARD_SIZE + 1)
     root = tk.Tk()
-    app = ChessUI(root, BOARD_SIZE, SQUARE_SIZE, LIGHT_COLOR, DARK_COLOR, PIECE_SYMBOLS, FEN_SYMBOLS, START_POSITION)
+    root.geometry(f"{canvas_width + 400}x{canvas_height + 50}") 
+    app = MenuUI(root, board_size=BOARD_SIZE, square_size=SQUARE_SIZE)
     root.mainloop()
