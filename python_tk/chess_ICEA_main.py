@@ -29,5 +29,5 @@ START_POSITION = [
 
 if __name__ == "__main__" : 
     root = tk.Tk()
-    app = ChessUI(root)
+    app = ChessUI(root, BOARD_SIZE, SQUARE_SIZE, LIGHT_COLOR, DARK_COLOR, PIECE_SYMBOLS, FEN_SYMBOLS, START_POSITION)
     root.mainloop()
