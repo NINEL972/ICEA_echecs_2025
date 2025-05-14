@@ -96,9 +96,3 @@ class ChessUI:
             self.draw_pieces()
             self.draw_coordinates()
             self.update_fen_display()
-
-
-if __name__ == "__main__" : 
-    root = tk.Tk()
-    app = ChessUI(root)
-    root.mainloop()

@@ -26,3 +26,7 @@ START_POSITION = [
     ["wr", "wn", "wb", "wq", "wk", "wb", "wn", "wr"]
 ]
 
+if __name__ == "__main__" : 
+    root = tk.Tk()
+    app = ChessUI(root)
+    root.mainloop()
