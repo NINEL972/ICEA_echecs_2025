@@ -1,4 +1,8 @@
 import tkinter as tk
+from tkinter import filedialog
+import chess.pgn
+import chess
+import io
 
 class ChessUI:
     def __init__(self, root, board_size, square_size, light_color, dark_color, piece_symbols, fen_symbols, start_position):
@@ -9,9 +13,9 @@ class ChessUI:
         self.PIECE_SYMBOLS = piece_symbols
         self.FEN_SYMBOLS = fen_symbols
         self.START_POSITION = start_position
-        
+
         self.root = root
-        self.root.title("Échiquier avec coordonnées externes et FEN")
+        self.root.title("Échiquier avec FEN et PGN Viewer")
 
         canvas_width = self.SQUARE_SIZE * (self.BOARD_SIZE + 1)
         canvas_height = self.SQUARE_SIZE * (self.BOARD_SIZE + 1)
@@ -28,11 +32,22 @@ class ChessUI:
         self.fen_text = tk.Text(frame, height=3, width=50, font=("Courier", 10))
         self.fen_text.grid(row=0, column=1, sticky="n", padx=10, pady=30)
 
-
         self.flip_button = tk.Button(frame, text="Tourner le plateau", command=self.flip_board)
-        self.flip_button.grid(row=1, column=1, sticky="n", padx=10, pady=10)
+        self.flip_button.grid(row=1, column=1, sticky="n", padx=10, pady=5)
+
+        self.load_pgn_button = tk.Button(frame, text="Charger un fichier PGN", command=self.load_pgn)
+        self.load_pgn_button.grid(row=2, column=1, sticky="nw", padx=10, pady=5)
+
+        self.prev_button = tk.Button(frame, text="← Précédent", command=self.prev_move, state="disabled")
+        self.prev_button.grid(row=3, column=1, sticky="nw", padx=10, pady=5)
+
+        self.next_button = tk.Button(frame, text="Suivant →", command=self.next_move, state="disabled")
+        self.next_button.grid(row=3, column=1, sticky="ne", padx=10, pady=5)
 
         self.board = [row[:] for row in self.START_POSITION]
+        self.pgn_moves = []
+        self.current_move_index = 0
+
         self.draw_board()
         self.draw_pieces()
         self.draw_coordinates()
@@ -59,14 +74,12 @@ class ChessUI:
                     self.canvas.create_text(x, y, text=symbol, font=("Arial", 32))
 
     def draw_coordinates(self):
-        # Lettres a-h en bas
         for col in range(self.BOARD_SIZE):
             letter = chr(ord('a') + col)
             x = (col + 1) * self.SQUARE_SIZE + self.SQUARE_SIZE // 2
             y = self.BOARD_SIZE * self.SQUARE_SIZE + self.SQUARE_SIZE // 2
             self.canvas.create_text(x, y, text=letter, font=("Arial", 12, "bold"))
 
-        # Chiffres 8-1 à gauche
         for row in range(self.BOARD_SIZE):
             number = str(8 - row)
             x = self.SQUARE_SIZE // 2
@@ -95,14 +108,76 @@ class ChessUI:
                 fen_row += str(empty)
             fen_rows.append(fen_row)
         return "/".join(fen_rows) + " w KQkq - 0 1"
-    
+
     def flip_board(self):
-            # Inverser le contenu du plateau
-            self.board = [row[::-1] for row in self.board[::-1]]
-            
-            # Effacer tout et redessiner
-            self.canvas.delete("all")
-            self.draw_board()
-            self.draw_pieces()
-            self.draw_coordinates()
+        self.board = [row[::-1] for row in self.board[::-1]]
+        self.canvas.delete("all")
+        self.draw_board()
+        self.draw_pieces()
+        self.draw_coordinates()
+        self.update_fen_display()
+
+    def fen_to_board(self, fen):
+        board = []
+        rows = fen.split(" ")[0].split("/")
+        for row in rows:
+            board_row = []
+            for char in row:
+                if char.isdigit():
+                    board_row.extend([""] * int(char))
+                else:
+                    piece = next((k for k, v in self.FEN_SYMBOLS.items() if v == char), "")
+                    board_row.append(piece)
+            board.append(board_row)
+        return board
+
+    def show_fen(self, fen):
+        self.board = self.fen_to_board(fen)
+        self.canvas.delete("all")
+        self.draw_board()
+        self.draw_pieces()
+        self.draw_coordinates()
+
+    def load_pgn(self):
+        file_path = filedialog.askopenfilename(filetypes=[("Fichiers PGN", "*.pgn")])
+        if file_path:
+            with open(file_path, "r") as f:
+                pgn_data = f.read()
+            try:
+                self.pgn_moves = self.pgn_to_fens(pgn_data)
+                self.current_move_index = 0
+                self.show_fen(self.pgn_moves[0])
+                self.update_fen_display()
+                self.next_button.config(state="normal")
+                self.prev_button.config(state="disabled")
+                print("PGN chargé avec succès.")
+            except Exception as e:
+                print("Erreur lors du chargement du PGN :", e)
+
+    def pgn_to_fens(self, pgn_text):
+        fens = []
+        game = chess.pgn.read_game(io.StringIO(pgn_text))
+        board = game.board()
+        fens.append(board.fen())
+        for move in game.mainline_moves():
+            board.push(move)
+            fens.append(board.fen())
+        return fens
+
+    def next_move(self):
+        if self.current_move_index + 1 < len(self.pgn_moves):
+            self.current_move_index += 1
+            self.show_fen(self.pgn_moves[self.current_move_index])
             self.update_fen_display()
+            self.prev_button.config(state="normal")
+            if self.current_move_index == len(self.pgn_moves) - 1:
+                self.next_button.config(state="disabled")
+
+    def prev_move(self):
+        if self.current_move_index > 0:
+            self.current_move_index -= 1
+            self.show_fen(self.pgn_moves[self.current_move_index])
+            self.update_fen_display()
+            self.next_button.config(state="normal")
+            if self.current_move_index == 0:
+                self.prev_button.config(state="disabled")
