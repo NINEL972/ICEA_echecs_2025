@@ -3,46 +3,25 @@ from tkinter import filedialog
 import chess.pgn
 import chess
 import io
-<<<<<<< HEAD
-from datetime import date
-from PIL import Image, ImageTk
-from chess_ICEA_main import *
-
-
-=======
->>>>>>> 5d7ca856dac6c70e11e3625acece5f7578d12656
 
 class ChessUI:
-    def __init__(self, main_window, root_frame, board_size, square_size, retour_menu_callback=None):
-        self.root = root_frame
-        self.main_window = main_window
-        self.retour_menu_callback = retour_menu_callback
-        self.LIGHT_COLOR = LIGHT_COLOR
-        self.DARK_COLOR = DARK_COLOR
-        self.PIECE_SYMBOLS = PIECE_SYMBOLS
-        self.FEN_SYMBOLS = FEN_SYMBOLS
-        self.START_POSITION = START_POSITION
-        self.board = [row[:] for row in self.START_POSITION]
-
+    def __init__(self, root, board_size, square_size, light_color, dark_color, piece_symbols, fen_symbols, start_position):
         self.BOARD_SIZE = board_size
         self.SQUARE_SIZE = square_size
+        self.LIGHT_COLOR = light_color
+        self.DARK_COLOR = dark_color
+        self.PIECE_SYMBOLS = piece_symbols
+        self.FEN_SYMBOLS = fen_symbols
+        self.START_POSITION = start_position
 
-        self.main_window.title("Échiquier avec coordonnées externes et FEN")
+        self.root = root
+        self.root.title("Échiquier avec FEN et PGN Viewer")
 
-        canvas_width = square_size * (board_size + 1)
-        canvas_height = square_size * (board_size + 1)
+        canvas_width = self.SQUARE_SIZE * (self.BOARD_SIZE + 1)
+        canvas_height = self.SQUARE_SIZE * (self.BOARD_SIZE + 1)
 
-        frame = tk.Frame(self.root)
+        frame = tk.Frame(root)
         frame.pack()
-
-        # Load and set logo (optional)
-        try:
-            logo_path = "chess_logo.ico"
-            logo_image = Image.open(logo_path)
-            logo_photo = ImageTk.PhotoImage(logo_image)
-            self.main_window.iconphoto(True, logo_photo)
-        except Exception as e:
-            print(f"Logo could not be loaded: {e}")
 
         self.canvas = tk.Canvas(frame, width=canvas_width, height=canvas_height)
         self.canvas.grid(row=0, column=0)
@@ -56,8 +35,6 @@ class ChessUI:
         self.flip_button = tk.Button(frame, text="Tourner le plateau", command=self.flip_board)
         self.flip_button.grid(row=1, column=1, sticky="n", padx=10, pady=5)
 
-<<<<<<< HEAD
-=======
         self.load_pgn_button = tk.Button(frame, text="Charger un fichier PGN", command=self.load_pgn)
         self.load_pgn_button.grid(row=2, column=1, sticky="nw", padx=10, pady=5)
 
@@ -70,13 +47,11 @@ class ChessUI:
         self.board = [row[:] for row in self.START_POSITION]
         self.pgn_moves = []
         self.current_move_index = 0
->>>>>>> 5d7ca856dac6c70e11e3625acece5f7578d12656
 
         self.draw_board()
         self.draw_pieces()
         self.draw_coordinates()
         self.update_fen_display()
-
 
     def draw_board(self):
         for row in range(self.BOARD_SIZE):
@@ -206,19 +181,3 @@ class ChessUI:
             self.next_button.config(state="normal")
             if self.current_move_index == 0:
                 self.prev_button.config(state="disabled")
-<<<<<<< HEAD
-
-
-    def start_game(self):
-        # from MenuUI import MenuUI 
-        # self.menu_ui = MenuUI(self.root)
-        self.root.mainloop()
-        self.chess_ui = ChessUI(
-        self.root,
-        self.jeu_frame,
-        board_size=self.board_size,
-        square_size=self.square_size,
-        retour_menu_callback=self.show_menu
-        )
-=======
->>>>>>> 5d7ca856dac6c70e11e3625acece5f7578d12656
