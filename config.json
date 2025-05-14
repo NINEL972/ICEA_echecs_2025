@@ -1,5 +1,6 @@
 {
     "VERSION": "0.3",
+    "TITLE": "Bienvenue dans mon jeu chess game", 
     "BOARD_SIZE": 8,
     "SQUARE_SIZE": 60,
     "LIGHT_COLOR": "#EEEED2",
