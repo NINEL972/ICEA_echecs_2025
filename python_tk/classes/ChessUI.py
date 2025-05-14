@@ -1,10 +1,20 @@
+import tkinter as tk
+
 class ChessUI:
-    def __init__(self, root):
+    def __init__(self, root, board_size, square_size, light_color, dark_color, piece_symbols, fen_symbols, start_position):
+        self.BOARD_SIZE = board_size
+        self.SQUARE_SIZE = square_size
+        self.LIGHT_COLOR = light_color
+        self.DARK_COLOR = dark_color
+        self.PIECE_SYMBOLS = piece_symbols
+        self.FEN_SYMBOLS = fen_symbols
+        self.START_POSITION = start_position
+        
         self.root = root
         self.root.title("Échiquier avec coordonnées externes et FEN")
 
-        canvas_width = SQUARE_SIZE * (BOARD_SIZE + 1)
-        canvas_height = SQUARE_SIZE * (BOARD_SIZE + 1)
+        canvas_width = self.SQUARE_SIZE * (self.BOARD_SIZE + 1)
+        canvas_height = self.SQUARE_SIZE * (self.BOARD_SIZE + 1)
 
         frame = tk.Frame(root)
         frame.pack()
@@ -22,45 +32,45 @@ class ChessUI:
         self.flip_button = tk.Button(frame, text="Tourner le plateau", command=self.flip_board)
         self.flip_button.grid(row=1, column=1, sticky="n", padx=10, pady=10)
 
-        self.board = [row[:] for row in START_POSITION]
+        self.board = [row[:] for row in self.START_POSITION]
         self.draw_board()
         self.draw_pieces()
         self.draw_coordinates()
         self.update_fen_display()
 
     def draw_board(self):
-        for row in range(BOARD_SIZE):
-            for col in range(BOARD_SIZE):
-                color = LIGHT_COLOR if (row + col) % 2 == 0 else DARK_COLOR
-                x1 = (col + 1) * SQUARE_SIZE
-                y1 = row * SQUARE_SIZE
-                x2 = x1 + SQUARE_SIZE
-                y2 = y1 + SQUARE_SIZE
+        for row in range(self.BOARD_SIZE):
+            for col in range(self.BOARD_SIZE):
+                color = self.LIGHT_COLOR if (row + col) % 2 == 0 else self.DARK_COLOR
+                x1 = (col + 1) * self.SQUARE_SIZE
+                y1 = row * self.SQUARE_SIZE
+                x2 = x1 + self.SQUARE_SIZE
+                y2 = y1 + self.SQUARE_SIZE
                 self.canvas.create_rectangle(x1, y1, x2, y2, fill=color, outline="")
 
     def draw_pieces(self):
-        for row in range(BOARD_SIZE):
-            for col in range(BOARD_SIZE):
+        for row in range(self.BOARD_SIZE):
+            for col in range(self.BOARD_SIZE):
                 piece = self.board[row][col]
                 if piece:
-                    symbol = PIECE_SYMBOLS.get(piece, "")
-                    x = (col + 1) * SQUARE_SIZE + SQUARE_SIZE // 2
-                    y = row * SQUARE_SIZE + SQUARE_SIZE // 2
+                    symbol = self.PIECE_SYMBOLS.get(piece, "")
+                    x = (col + 1) * self.SQUARE_SIZE + self.SQUARE_SIZE // 2
+                    y = row * self.SQUARE_SIZE + self.SQUARE_SIZE // 2
                     self.canvas.create_text(x, y, text=symbol, font=("Arial", 32))
 
     def draw_coordinates(self):
         # Lettres a-h en bas
-        for col in range(BOARD_SIZE):
+        for col in range(self.BOARD_SIZE):
             letter = chr(ord('a') + col)
-            x = (col + 1) * SQUARE_SIZE + SQUARE_SIZE // 2
-            y = BOARD_SIZE * SQUARE_SIZE + SQUARE_SIZE // 2
+            x = (col + 1) * self.SQUARE_SIZE + self.SQUARE_SIZE // 2
+            y = self.BOARD_SIZE * self.SQUARE_SIZE + self.SQUARE_SIZE // 2
             self.canvas.create_text(x, y, text=letter, font=("Arial", 12, "bold"))
 
         # Chiffres 8-1 à gauche
-        for row in range(BOARD_SIZE):
+        for row in range(self.BOARD_SIZE):
             number = str(8 - row)
-            x = SQUARE_SIZE // 2
-            y = row * SQUARE_SIZE + SQUARE_SIZE // 2
+            x = self.SQUARE_SIZE // 2
+            y = row * self.SQUARE_SIZE + self.SQUARE_SIZE // 2
             self.canvas.create_text(x, y, text=number, font=("Arial", 12, "bold"))
 
     def update_fen_display(self):
@@ -80,7 +90,7 @@ class ChessUI:
                     if empty:
                         fen_row += str(empty)
                         empty = 0
-                    fen_row += FEN_SYMBOLS.get(piece, "")
+                    fen_row += self.FEN_SYMBOLS.get(piece, "")
             if empty:
                 fen_row += str(empty)
             fen_rows.append(fen_row)
