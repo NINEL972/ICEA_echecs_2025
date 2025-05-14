@@ -1,13 +1,16 @@
 import tkinter as tk
-from tkinter import filedialog, messagebox
+from tkinter import filedialog
 import chess.pgn
 import chess
 import io
+<<<<<<< HEAD
 from datetime import date
 from PIL import Image, ImageTk
 from chess_ICEA_main import *
 
 
+=======
+>>>>>>> 5d7ca856dac6c70e11e3625acece5f7578d12656
 
 class ChessUI:
     def __init__(self, main_window, root_frame, board_size, square_size, retour_menu_callback=None):
@@ -53,6 +56,21 @@ class ChessUI:
         self.flip_button = tk.Button(frame, text="Tourner le plateau", command=self.flip_board)
         self.flip_button.grid(row=1, column=1, sticky="n", padx=10, pady=5)
 
+<<<<<<< HEAD
+=======
+        self.load_pgn_button = tk.Button(frame, text="Charger un fichier PGN", command=self.load_pgn)
+        self.load_pgn_button.grid(row=2, column=1, sticky="nw", padx=10, pady=5)
+
+        self.prev_button = tk.Button(frame, text="← Précédent", command=self.prev_move, state="disabled")
+        self.prev_button.grid(row=3, column=1, sticky="nw", padx=10, pady=5)
+
+        self.next_button = tk.Button(frame, text="Suivant →", command=self.next_move, state="disabled")
+        self.next_button.grid(row=3, column=1, sticky="ne", padx=10, pady=5)
+
+        self.board = [row[:] for row in self.START_POSITION]
+        self.pgn_moves = []
+        self.current_move_index = 0
+>>>>>>> 5d7ca856dac6c70e11e3625acece5f7578d12656
 
         self.draw_board()
         self.draw_pieces()
@@ -145,7 +163,21 @@ class ChessUI:
         self.draw_pieces()
         self.draw_coordinates()
 
-    
+    def load_pgn(self):
+        file_path = filedialog.askopenfilename(filetypes=[("Fichiers PGN", "*.pgn")])
+        if file_path:
+            with open(file_path, "r") as f:
+                pgn_data = f.read()
+            try:
+                self.pgn_moves = self.pgn_to_fens(pgn_data)
+                self.current_move_index = 0
+                self.show_fen(self.pgn_moves[0])
+                self.update_fen_display()
+                self.next_button.config(state="normal")
+                self.prev_button.config(state="disabled")
+                print("PGN chargé avec succès.")
+            except Exception as e:
+                print("Erreur lors du chargement du PGN :", e)
 
     def pgn_to_fens(self, pgn_text):
         fens = []
@@ -156,42 +188,6 @@ class ChessUI:
             board.push(move)
             fens.append(board.fen())
         return fens
-
-    def generate_pgn(self):
-        if not self.pgn_moves:
-            messagebox.showwarning("Aucun mouvement", "Aucun mouvement chargé pour générer un PGN.")
-            return
-
-        game = chess.pgn.Game()
-        game.headers["Event"] = "Chess Game"
-        game.headers["Site"] = "Local"
-        game.headers["Date"] = date.today().strftime("%Y.%m.%d")
-        game.headers["Round"] = "1"
-        game.headers["White"] = "Player1"
-        game.headers["Black"] = "Player2"
-        game.headers["Result"] = "*"
-
-        board = chess.Board()
-        node = game
-        for fen in self.pgn_moves[1:]:
-            board.set_fen(fen)
-            move = None
-            for m in board.legal_moves:
-                temp_board = board.copy()
-                temp_board.push(m)
-                if temp_board.fen() == fen:
-                    move = m
-                    break
-            if move:
-                node = node.add_variation(move)
-                board.push(move)
-
-        pgn_string = str(game)
-        file_path = filedialog.asksaveasfilename(defaultextension=".pgn", filetypes=[("Fichiers PGN", "*.pgn")])
-        if file_path:
-            with open(file_path, "w") as f:
-                f.write(pgn_string)
-            messagebox.showinfo("Succès", "PGN généré et sauvegardé avec succès.")
 
     def next_move(self):
         if self.current_move_index + 1 < len(self.pgn_moves):
@@ -210,6 +206,7 @@ class ChessUI:
             self.next_button.config(state="normal")
             if self.current_move_index == 0:
                 self.prev_button.config(state="disabled")
+<<<<<<< HEAD
 
 
     def start_game(self):
@@ -223,3 +220,5 @@ class ChessUI:
         square_size=self.square_size,
         retour_menu_callback=self.show_menu
         )
+=======
+>>>>>>> 5d7ca856dac6c70e11e3625acece5f7578d12656
