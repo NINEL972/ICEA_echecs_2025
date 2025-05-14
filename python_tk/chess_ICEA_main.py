@@ -1,4 +1,5 @@
 import tkinter as tk
+from classes.ChessUI import ChessUI
 
 BOARD_SIZE = 8
 SQUARE_SIZE = 60
