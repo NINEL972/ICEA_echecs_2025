@@ -1,4 +1,4 @@
-# Chess Board with Tkinter
+# Chess Board avec Tkinter
 
 Un échiquier interactif implémenté en Python avec la bibliothèque Tkinter, affichant les coordonnées et la notation FEN ou PGN.
 
@@ -9,11 +9,11 @@ Un échiquier interactif implémenté en Python avec la bibliothèque Tkinter, a
 - Affichage en temps réel de la notation FEN (Forsyth-Edwards Notation)
 - Bouton pour tourner le plateau (changer la perspective)
 - Fonctions principales
-draw_board() : dessine l'échiquier
-draw_pieces() : place les pièces sur l'échiquier
-draw_coordinates() : ajoute les coordonnées autour du plateau
-board_to_fen() : convertit la position actuelle en notation FEN
-flip_board() : inverse la perspective du plateau
+- draw_board() : dessine l'échiquier
+- draw_pieces() : place les pièces sur l'échiquier
+- draw_coordinates() : ajoute les coordonnées autour du plateau
+- board_to_fen() : convertit la position actuelle en notation FEN
+- flip_board() : inverse la perspective du plateau
 
 ## Features
 
