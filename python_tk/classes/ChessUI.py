@@ -34,11 +34,11 @@ class ChessUI:
 
         # Load and set logo (optional)
         try:
-            logo_path = "images\chess.png"
+            logo_path = r"..\images\chess.png"
             logo_image = Image.open(logo_path)
             logo_photo = ImageTk.PhotoImage(logo_image)
             self.main_window.iconphoto(True, logo_photo)
-            root_frame.iconbitmap("images\chess.png")
+            root_frame.iconbitmap(r"..\images\chess.png")
         except Exception as e:
             print(f"Logo could not be loaded: {e}")
 
