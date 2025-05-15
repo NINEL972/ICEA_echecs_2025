@@ -1,7 +1,5 @@
 import tkinter as tk
 from tkinter import filedialog
-
-import chess
 import io
 from datetime import date
 from PIL import Image, ImageTk
@@ -32,23 +30,24 @@ class ChessUI:
         frame = tk.Frame(self.root)
         frame.pack()
 
-    
         self.timer_label = tk.Label(frame, text="Temps : 00:00", font=("Arial", 12, "bold"))
         self.timer_label.grid(row=1, column=0, sticky="n", padx=10, pady=5)
 
         self.elapsed_seconds = 0 
         self.update_timer() 
 
+        # Initialisation du vérificateur de mouvements
+        self.checker = CheckPieces()
 
-        # Load and set logo (optional)
+        # Chargement du logo
         try:
             logo_path = r"..\images\chess.png"
             logo_image = Image.open(logo_path)
             logo_photo = ImageTk.PhotoImage(logo_image)
             self.main_window.iconphoto(True, logo_photo)
-            root_frame.iconbitmap(r"..\images\chess.png")
+            self.main_window.iconbitmap(r"..\images\chess.png")
         except Exception as e:
-            print(f"Logo could not be loaded: {e}")
+            print(f"Logo non chargé : {e}")
 
         self.canvas = tk.Canvas(frame, width=canvas_width, height=canvas_height)
         self.canvas.grid(row=0, column=0)
@@ -62,7 +61,7 @@ class ChessUI:
         self.flip_button = tk.Button(frame, text="Tourner le plateau", command=self.flip_board)
         self.flip_button.grid(row=1, column=1, sticky="n", padx=10, pady=5)
 
-        # Initialisation des variables pour le déplacement des pièces
+        # Variables pour le déplacement des pièces
         self.selected_piece = None
         self.canvas.bind("<Button-1>", self.on_click)
 
@@ -70,7 +69,6 @@ class ChessUI:
         self.draw_pieces()
         self.draw_coordinates()
         self.update_fen_display()
-
 
     def draw_board(self):
         for row in range(self.BOARD_SIZE):
@@ -136,14 +134,13 @@ class ChessUI:
         self.draw_coordinates()
         self.update_fen_display()
 
-
     def on_click(self, event):
         # Gestion des clics pour déplacer une pièce
-        col = (event.x // SQUARE_SIZE) - 1
-        row = event.y // SQUARE_SIZE
+        col = (event.x // self.SQUARE_SIZE) - 1
+        row = event.y // self.SQUARE_SIZE
 
         # Vérifier si le clic est dans les limites du plateau
-        if 0 <= row < BOARD_SIZE and 0 <= col < BOARD_SIZE:
+        if 0 <= row < self.BOARD_SIZE and 0 <= col < self.BOARD_SIZE:
             if self.selected_piece is None:
                 # Premier clic : sélectionner une pièce
                 if self.board[row][col]:  # Vérifie qu'il y a une pièce sur la case
@@ -152,10 +149,12 @@ class ChessUI:
                 # Deuxième clic : déplacer la pièce
                 target_row, target_col = row, col
                 piece = self.board[self.selected_piece[0]][self.selected_piece[1]]
-                # Vérification CheckPiece
-                if CheckPieces.verify_move(piece, target_row, target_col):
+                
+                # Vérification du mouvement avec CheckPieces
+                if self.checker.verify_move(piece, target_row, target_col):
                     self.board[self.selected_piece[0]][self.selected_piece[1]] = ""
                     self.board[target_row][target_col] = piece
+                
                 self.selected_piece = None
 
                 # Redessiner le plateau et les pièces
@@ -163,6 +162,7 @@ class ChessUI:
                 self.draw_board()
                 self.draw_pieces()
                 self.draw_coordinates()
+                self.update_fen_display()
 
     def fen_to_board(self, fen):
         board = []
@@ -184,8 +184,7 @@ class ChessUI:
         self.draw_board()
         self.draw_pieces()
         self.draw_coordinates()
-
-    
+        self.update_fen_display()
 
     def pgn_to_fens(self, pgn_text):
         fens = []
@@ -215,18 +214,8 @@ class ChessUI:
             if self.current_move_index == 0:
                 self.prev_button.config(state="disabled")
 
-
     def start_game(self):
-        # from MenuUI import MenuUI 
-        # self.menu_ui = MenuUI(self.root)
         self.root.mainloop()
-        self.chess_ui = ChessUI(
-        self.root,
-        self.jeu_frame,
-        board_size=self.board_size,
-        square_size=self.square_size,
-        retour_menu_callback=self.show_menu
-        )
 
     def update_timer(self):
         minutes = self.elapsed_seconds // 60
