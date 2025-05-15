@@ -1,4 +1,4 @@
-class CheckPiece:
+class CheckPieces:
     def __init__(self):
         """
         Initialise la classe avec le dictionnaire des mouvements possibles.

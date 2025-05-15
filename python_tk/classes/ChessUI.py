@@ -1,12 +1,11 @@
 import tkinter as tk
 from tkinter import filedialog
 
-import chess
 import io
 from datetime import date
 from PIL import Image, ImageTk
 from chess_ICEA_main import *
-from Check_pieces import CheckPiece
+from classes.Check_pieces import CheckPieces
 
 
 class ChessUI:
@@ -145,7 +144,7 @@ class ChessUI:
                 target_row, target_col = row, col
                 piece = self.board[self.selected_piece[0]][self.selected_piece[1]]
                 # Vérification CheckPiece
-                if CheckPiece.verify_move(piece, target_row, target_col):
+                if CheckPieces.verify_move(piece, target_row, target_col):
                     self.board[self.selected_piece[0]][self.selected_piece[1]] = ""
                     self.board[target_row][target_col] = piece
                 self.selected_piece = None
