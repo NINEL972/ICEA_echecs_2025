@@ -6,7 +6,7 @@ import io
 from datetime import date
 from PIL import Image, ImageTk
 from chess_ICEA_main import *
-
+from Check_pieces import CheckPiece
 
 
 class ChessUI:
@@ -54,6 +54,9 @@ class ChessUI:
         self.flip_button = tk.Button(frame, text="Tourner le plateau", command=self.flip_board)
         self.flip_button.grid(row=1, column=1, sticky="n", padx=10, pady=5)
 
+        # Initialisation des variables pour le déplacement des pièces
+        self.selected_piece = None
+        self.canvas.bind("<Button-1>", self.on_click)
 
         self.draw_board()
         self.draw_pieces()
@@ -124,6 +127,34 @@ class ChessUI:
         self.draw_pieces()
         self.draw_coordinates()
         self.update_fen_display()
+
+
+    def on_click(self, event):
+        # Gestion des clics pour déplacer une pièce
+        col = (event.x // SQUARE_SIZE) - 1
+        row = event.y // SQUARE_SIZE
+
+        # Vérifier si le clic est dans les limites du plateau
+        if 0 <= row < BOARD_SIZE and 0 <= col < BOARD_SIZE:
+            if self.selected_piece is None:
+                # Premier clic : sélectionner une pièce
+                if self.board[row][col]:  # Vérifie qu'il y a une pièce sur la case
+                    self.selected_piece = (row, col)
+            else:
+                # Deuxième clic : déplacer la pièce
+                target_row, target_col = row, col
+                piece = self.board[self.selected_piece[0]][self.selected_piece[1]]
+                # Vérification CheckPiece
+                if CheckPiece.verify_move(piece, target_row, target_col):
+                    self.board[self.selected_piece[0]][self.selected_piece[1]] = ""
+                    self.board[target_row][target_col] = piece
+                self.selected_piece = None
+
+                # Redessiner le plateau et les pièces
+                self.canvas.delete("all")
+                self.draw_board()
+                self.draw_pieces()
+                self.draw_coordinates()
 
     def fen_to_board(self, fen):
         board = []
