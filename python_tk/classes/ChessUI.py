@@ -1,16 +1,13 @@
 import tkinter as tk
 from tkinter import filedialog
-import chess.pgn
-import chess
+# import chess.pgn
+# import chess
 import io
-<<<<<<< HEAD
 from datetime import date
 from PIL import Image, ImageTk
 from chess_ICEA_main import *
 
 
-=======
->>>>>>> 5d7ca856dac6c70e11e3625acece5f7578d12656
 
 class ChessUI:
     def __init__(self, main_window, root_frame, board_size, square_size, retour_menu_callback=None):
@@ -56,21 +53,6 @@ class ChessUI:
         self.flip_button = tk.Button(frame, text="Tourner le plateau", command=self.flip_board)
         self.flip_button.grid(row=1, column=1, sticky="n", padx=10, pady=5)
 
-<<<<<<< HEAD
-=======
-        self.load_pgn_button = tk.Button(frame, text="Charger un fichier PGN", command=self.load_pgn)
-        self.load_pgn_button.grid(row=2, column=1, sticky="nw", padx=10, pady=5)
-
-        self.prev_button = tk.Button(frame, text="← Précédent", command=self.prev_move, state="disabled")
-        self.prev_button.grid(row=3, column=1, sticky="nw", padx=10, pady=5)
-
-        self.next_button = tk.Button(frame, text="Suivant →", command=self.next_move, state="disabled")
-        self.next_button.grid(row=3, column=1, sticky="ne", padx=10, pady=5)
-
-        self.board = [row[:] for row in self.START_POSITION]
-        self.pgn_moves = []
-        self.current_move_index = 0
->>>>>>> 5d7ca856dac6c70e11e3625acece5f7578d12656
 
         self.draw_board()
         self.draw_pieces()
@@ -206,7 +188,6 @@ class ChessUI:
             self.next_button.config(state="normal")
             if self.current_move_index == 0:
                 self.prev_button.config(state="disabled")
-<<<<<<< HEAD
 
 
     def start_game(self):
@@ -220,5 +201,3 @@ class ChessUI:
         square_size=self.square_size,
         retour_menu_callback=self.show_menu
         )
-=======
->>>>>>> 5d7ca856dac6c70e11e3625acece5f7578d12656
