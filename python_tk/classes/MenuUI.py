@@ -1,5 +1,7 @@
 import tkinter as tk
 from classes.ChessUI import ChessUI
+from PIL import Image, ImageTk
+import os
 
 BOARD_SIZE = 8
 SQUARE_SIZE = 60
@@ -16,8 +18,18 @@ class MenuUI:
         self.square_size = square_size
 
         # --- Menu Frame ---
-        self.menu_frame = tk.Frame(root, bg="black")  # fond noir
+        self.menu_frame = tk.Frame(root, bg="black") 
         self.menu_frame.pack(fill="both", expand=True)
+
+    
+        try:
+            logo_path = r"..\images\chess.png"
+            logo_image = Image.open(logo_path)
+            logo_photo = ImageTk.PhotoImage(logo_image)
+            self.root.iconphoto(True, logo_photo)
+            root.iconbitmap("\images\chess.png")
+        except Exception as e:
+            print(f"Logo could not be loaded: {e}")
 
         self.title_label = tk.Label(
             self.menu_frame,
@@ -43,7 +55,7 @@ class MenuUI:
         )
         self.bouton_quitter.pack(pady=5)
 
-        # --- Game Frame (vide au départ) ---
+        # --- Game Frame ---
         self.jeu_frame = tk.Frame(root)
         self.chess_ui = None
 
