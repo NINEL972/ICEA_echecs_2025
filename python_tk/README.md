@@ -29,6 +29,7 @@ Un échiquier interactif implémenté en Python avec la bibliothèque Tkinter, a
 
 - Python 3.x
 - Bibliothèque Tkinter (généralement incluse avec Python)
+- pip install python-chess
 
 ## Installation
 
