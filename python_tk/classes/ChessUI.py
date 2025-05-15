@@ -32,6 +32,14 @@ class ChessUI:
         frame = tk.Frame(self.root)
         frame.pack()
 
+    
+        self.timer_label = tk.Label(frame, text="Temps : 00:00", font=("Arial", 12, "bold"))
+        self.timer_label.grid(row=1, column=0, sticky="n", padx=10, pady=5)
+
+        self.elapsed_seconds = 0 
+        self.update_timer() 
+
+
         # Load and set logo (optional)
         try:
             logo_path = r"..\images\chess.png"
@@ -219,3 +227,11 @@ class ChessUI:
         square_size=self.square_size,
         retour_menu_callback=self.show_menu
         )
+
+    def update_timer(self):
+        minutes = self.elapsed_seconds // 60
+        seconds = self.elapsed_seconds % 60
+        time_str = f"Temps : {minutes:02d}:{seconds:02d}"
+        self.timer_label.config(text=time_str)
+        self.elapsed_seconds += 1
+        self.root.after(1000, self.update_timer)
