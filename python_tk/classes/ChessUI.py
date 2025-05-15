@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import filedialog
-import chess.pgn
+
 import chess
 import io
 from datetime import date
@@ -145,21 +145,7 @@ class ChessUI:
         self.draw_pieces()
         self.draw_coordinates()
 
-    def load_pgn(self):
-        file_path = filedialog.askopenfilename(filetypes=[("Fichiers PGN", "*.pgn")])
-        if file_path:
-            with open(file_path, "r") as f:
-                pgn_data = f.read()
-            try:
-                self.pgn_moves = self.pgn_to_fens(pgn_data)
-                self.current_move_index = 0
-                self.show_fen(self.pgn_moves[0])
-                self.update_fen_display()
-                self.next_button.config(state="normal")
-                self.prev_button.config(state="disabled")
-                print("PGN chargé avec succès.")
-            except Exception as e:
-                print("Erreur lors du chargement du PGN :", e)
+    
 
     def pgn_to_fens(self, pgn_text):
         fens = []
