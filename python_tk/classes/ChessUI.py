@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import filedialog
 
+import chess
 import io
 from datetime import date
 from PIL import Image, ImageTk
