@@ -6,7 +6,7 @@ from datetime import date
 from PIL import Image, ImageTk
 from chess_ICEA_main import *  # Contient probablement les constantes (ex : START_POSITION)
 from classes.Check_pieces import CheckPieces  # Classe pour vérifier les mouvements valides
-#bhdnhjebbcez
+
 class ChessUI:
     def __init__(self, main_window, root_frame, board_size, square_size, retour_menu_callback=None):
         # Initialisation de l’interface utilisateur pour le jeu d’échecs
@@ -161,7 +161,7 @@ class ChessUI:
                 # Sélectionner une pièce
                 if self.board[row][col]:
                     self.selected_piece = (row, col)
-            else:
+            elif not self.board[row][col]:
                 # Déplacer la pièce sélectionnée
                 target_row, target_col = row, col
                 piece = self.board[self.selected_piece[0]][self.selected_piece[1]]
@@ -177,6 +177,8 @@ class ChessUI:
                 self.draw_pieces()
                 self.draw_coordinates()
                 self.update_fen_display()
+            else :
+                self.selected_piece = None
 
     def fen_to_board(self, fen):
         """Convertit une chaîne FEN en matrice self.board."""
